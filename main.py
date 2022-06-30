@@ -57,8 +57,7 @@ class Player(pygame.sprite.Sprite):
             self.image = self.walk[int(self.index)]
 
     def reset(self):
-        if not game_active:
-            self.rect.midbottom = (100, 300)
+        self.rect.midbottom = (100, 300)
 
     def update(self):
         self.player_input()
