@@ -13,7 +13,7 @@ game_over = False
 colliding = False
 collision_n = 0
 
-start_time = 1000
+start_time = 0
 score = 0
 highscore = 0
 
@@ -64,7 +64,7 @@ class Game:
         self.player = pygame.sprite.GroupSingle()
         self.player.add(Player())
 
-        self.obstacle_group = pygame.sprite.Group()
+        self.obstacles = pygame.sprite.Group()
 
         # -----------------------------------TIMER--------------------------------------------------#
         self.obstacle_timer = pygame.USEREVENT + 1
@@ -89,7 +89,9 @@ class Game:
     def collisions(self):
         global collision_n, colliding, game_active, score, highscore
 
-        if pygame.sprite.spritecollide(self.player.sprite, self.obstacle_group, False):
+        collided = [bool(pygame.sprite.collide_mask(self.player.sprite, obstacle))
+                    for obstacle in self.obstacles.sprites()]  # list of True|False for each obstacle
+        if collided.__contains__(True):
             if not colliding:
                 collision_n += 1
                 if collision_n < 2:
@@ -99,6 +101,7 @@ class Game:
                 else:
                     print("Game over")
                 colliding = True
+
         else:
             colliding = False
 
@@ -118,9 +121,9 @@ class Game:
                 if game_active:
                     if event.type == self.obstacle_timer:
                         if not random.randrange(0, 4):
-                            self.obstacle_group.add(Obstacle("fly"))
+                            self.obstacles.add(Obstacle("fly"))
                         else:
-                            self.obstacle_group.add(Obstacle("snail"))
+                            self.obstacles.add(Obstacle("snail"))
 
             if game_active:
                 # -------------------------DRAW BACKGROUND------------------------------------------#
@@ -131,8 +134,8 @@ class Game:
                 self.player.update()
                 self.player.draw(self.screen)
 
-                self.obstacle_group.update()
-                self.obstacle_group.draw(self.screen)
+                self.obstacles.update()
+                self.obstacles.draw(self.screen)
 
                 # ------------------------------CALL FUNCTIONS--------------------------------------#
                 self.collisions()
@@ -141,7 +144,7 @@ class Game:
             # --------------------------------START/GAME 0VER SCREEN--------------------------------#
             else:
                 self.player.sprite.reset()
-                self.obstacle_group.empty()
+                self.obstacles.empty()
                 self.screen.fill("white")
                 if score:
                     self.screen.blit(self.game_over_surface, self.game_over_rect)
@@ -156,7 +159,7 @@ class Game:
                     self.screen.blit(self.highscore_surface, self.highscore_rect)
 
                 # ----------------------------(RE)START WITH DELAY----------------------------------#
-                if not game_over:
+                if score and not game_over:
                     pygame.display.update()
                     pygame.time.delay(1000)
                     game_over = True

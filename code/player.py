@@ -12,14 +12,19 @@ class Player(pygame.sprite.Sprite):
         walk2 = pygame.image.load(walk2_path).convert_alpha()
         self.walk = [walk1, walk2]
         self.index = 0
+
         jump_path = os.path.abspath(__file__) + "/../../graphics/Player/jump.png"
         self.jump = pygame.image.load(jump_path).convert_alpha()
+
         self.image = self.walk[self.index]
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(midbottom=(100, 300))
-        self.dy = 0
+
         jump_sound_path = os.path.abspath(__file__) + "/../../audio/jump.wav"
         self.jump_sound = pygame.mixer.Sound(jump_sound_path)
         self.jump_sound.set_volume(0.2)
+
+        self.dy = 0
 
     def player_input(self):
         keys = pygame.key.get_pressed()

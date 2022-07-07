@@ -13,8 +13,9 @@ class Obstacle(pygame.sprite.Sprite):
             snail2_path = os.path.abspath(__file__) + "/../../graphics/snail/snail2.png"
             snail2 = pygame.image.load(snail2_path).convert_alpha()
             self.frames = [snail1, snail2]
-            self.y = 300
             self.d_index = 0.1
+
+            self.y = 300
 
         if obstacle_type == "fly":
             fly1_path = os.path.abspath(__file__) + "/../../graphics/Fly/Fly1.png"
@@ -22,11 +23,13 @@ class Obstacle(pygame.sprite.Sprite):
             fly2_path = os.path.abspath(__file__) + "/../../graphics/Fly/Fly2.png"
             fly2 = pygame.image.load(fly2_path).convert_alpha()
             self.frames = [fly1, fly2]
-            self.y = 200
             self.d_index = 0.2
+
+            self.y = 200
 
         self.index = 0
         self.image = self.frames[self.index]
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(midbottom=(random.randint(900, 1100), self.y))
 
     def animate(self):
