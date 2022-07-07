@@ -89,17 +89,21 @@ class Game:
     def collisions(self):
         global collision_n, colliding, game_active, score, highscore
 
+        heart_path = os.path.abspath(__file__) + "/../../graphics/heart.png"
+        heart_surface = pygame.image.load(heart_path)
+        heart_surface = pygame.transform.rotozoom(heart_surface, 0, 0.075).convert_alpha()
+
+        self.screen.blit(heart_surface, (20, 20))
+        if collision_n < 2:
+            self.screen.blit(heart_surface, (20 + heart_surface.get_width(), 20))
+            if collision_n < 1:
+                self.screen.blit(heart_surface, (20 + 2 * heart_surface.get_width(), 20))
+
         collided = [bool(pygame.sprite.collide_mask(self.player.sprite, obstacle))
                     for obstacle in self.obstacles.sprites()]  # list of True|False for each obstacle
         if collided.__contains__(True):
             if not colliding:
                 collision_n += 1
-                if collision_n < 2:
-                    print(3 - collision_n, "lives left")
-                elif collision_n == 2:
-                    print("1 life left")
-                else:
-                    print("Game over")
                 colliding = True
 
         else:
