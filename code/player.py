@@ -6,21 +6,21 @@ import pygame
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        walk1_path = os.path.abspath(__file__) + "/../../graphics/Player/player_walk_1.png"
+        walk1_path = os.path.dirname(__file__) + "/../graphics/Player/player_walk_1.png"
         walk1 = pygame.image.load(walk1_path).convert_alpha()
-        walk2_path = os.path.abspath(__file__) + "/../../graphics/Player/player_walk_2.png"
+        walk2_path = os.path.dirname(__file__) + "/../graphics/Player/player_walk_2.png"
         walk2 = pygame.image.load(walk2_path).convert_alpha()
         self.walk = [walk1, walk2]
         self.index = 0
 
-        jump_path = os.path.abspath(__file__) + "/../../graphics/Player/jump.png"
+        jump_path = os.path.dirname(__file__) + "/../graphics/Player/jump.png"
         self.jump = pygame.image.load(jump_path).convert_alpha()
 
         self.image = self.walk[self.index]
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(midbottom=(100, 300))
 
-        jump_sound_path = os.path.abspath(__file__) + "/../../audio/jump.wav"
+        jump_sound_path = os.path.dirname(__file__) + "/../audio/jump.wav"
         self.jump_sound = pygame.mixer.Sound(jump_sound_path)
         self.jump_sound.set_volume(0.2)
 

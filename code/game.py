@@ -30,18 +30,18 @@ class Game:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("PIXEL RUNNER")
 
-        background_music_path = os.path.abspath(__file__) + "/../../audio/music.wav"
+        background_music_path = os.path.dirname(__file__) + "/../audio/music.wav"
         background_music = pygame.mixer.Sound(background_music_path)
         background_music.set_volume(0.3)
         background_music.play(-1)
 
-        sky_surface_path = os.path.abspath(__file__) + "/../../graphics/sky.jpg"
+        sky_surface_path = os.path.dirname(__file__) + "/../graphics/sky.jpg"
         self.sky_surface = pygame.image.load(sky_surface_path).convert()
-        ground_surface_path = os.path.abspath(__file__) + "/../../graphics/ground.jpg"
+        ground_surface_path = os.path.dirname(__file__) + "/../graphics/ground.jpg"
         self.ground_surface = pygame.image.load(ground_surface_path).convert()
 
         # ----------------------------------TEXT----------------------------------------------------#
-        minecraft_font_path = os.path.abspath(__file__) + "/../../fonts/Minecraft.ttf"
+        minecraft_font_path = os.path.dirname(__file__) + "/../fonts/Minecraft.ttf"
         self.name_font = pygame.font.Font(minecraft_font_path, 70)
         self.rest_font = pygame.font.Font(minecraft_font_path, 20)
         self.test_font = pygame.font.Font(minecraft_font_path, 50)
@@ -89,7 +89,7 @@ class Game:
     def collisions(self):
         global collision_n, colliding, game_active, score, highscore
 
-        heart_path = os.path.abspath(__file__) + "/../../graphics/heart.png"
+        heart_path = os.path.dirname(__file__) + "/../graphics/heart.png"
         heart_surface = pygame.image.load(heart_path)
         heart_surface = pygame.transform.rotozoom(heart_surface, 0, 0.075).convert_alpha()
 
