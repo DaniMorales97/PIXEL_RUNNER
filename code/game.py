@@ -6,6 +6,7 @@ import json
 from datetime import datetime
 from player import Player
 from obstacle import Obstacle
+from highscore_screen import highscore_screen
 
 
 # --------------------------------GLOBAL VARIABLES DEFAULT-------------------------------------#
@@ -18,42 +19,15 @@ collision_n = 0
 start_time = 0
 score = 0
 highscore = 0
-data = {}
 
 WIDTH, HEIGHT, MAX_FPS = (800, 400, 60)
-
-
-def save_highscore():
-    global highscore, data
-    max_score = max(data.values()) if data.values() else 0
-    if highscore > max_score:
-        now = datetime.now()
-        data[f"{now.strftime('%d/%m/%y %H:%M:%S')}"] = highscore
-
-        file_path = f"{os.path.dirname(__file__)}/highscore.txt"
-        with open(file_path, "w") as file:
-            json.dump(data, file)
-            print("Saved successfully")
-
-
-def load_highscore():
-    global highscore, data
-
-    file_path = f"{os.path.dirname(__file__)}/highscore.txt"
-    try:
-        with open(file_path) as file:
-            data = json.load(file)
-            highscore = max(data.values())
-            print("Loaded successfully")
-
-    except (json.decoder.JSONDecodeError, FileNotFoundError):
-        pass
 
 
 class Game:
     def __init__(self):
         # --------------------------------LOAD HIGHSCORE--------------------------------------------#
-        load_highscore()
+        self.data = {}
+        self.load_highscore()
 
         # -----------------------------INITIATE PYGAME AND CLOCK------------------------------------#
         pygame.init()
@@ -84,7 +58,7 @@ class Game:
         self.score_surface = self.test_font.render("Your score was: " + str(score), False, "black")
         self.game_over_surface = self.test_font.render("GAME OVER", False, "black")
         self.rest_surface = self.rest_font.render("CLICK ANYWHERE TO START AGAIN", False, "black")
-        self.highscore_surface = self.rest_font.render("HIGHSCORE: " + str(highscore), False, "black")
+        self.highscore_surface = self.rest_font.render(f"HIGHSCORE: {highscore}", False, "black")
 
         self.name_rect = self.name_surface.get_rect(center=(400, 200))
         self.start_rect = self.start_surface.get_rect(center=(400, 350))
@@ -116,9 +90,6 @@ class Game:
         if score > highscore:
             highscore = score
 
-        self.score_surface = self.test_font.render("Your score was: " + str(score), False, "black")
-        self.highscore_surface = self.rest_font.render("HIGHSCORE: " + str(highscore), False, "black")
-
     def collisions(self):
         global collision_n, colliding, game_active, score, highscore
 
@@ -146,6 +117,29 @@ class Game:
             game_active = False
             collision_n = 0
 
+    def save_highscore(self):
+        from highscore_screen import name
+        global highscore
+
+        now = datetime.now()
+        self.data[f"{now.strftime('%d/%m/%y %H:%M:%S')} - {name}"] = highscore
+
+        file_path = f"{os.path.dirname(__file__)}/highscore.txt"
+        with open(file_path, "w") as file:
+            json.dump(self.data, file)
+
+    def load_highscore(self):
+        global highscore
+
+        file_path = f"{os.path.dirname(__file__)}/highscore.txt"
+        try:
+            with open(file_path) as file:
+                self.data = json.load(file)
+                highscore = max(self.data.values())
+
+        except (json.decoder.JSONDecodeError, FileNotFoundError):
+            pass
+
     def run(self):
         global game_active, game_over, start_time, score, highscore
         # ----------------------------------MAIN LOOP-----------------------------------------------#
@@ -154,6 +148,9 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
+
+                """if event.type == pygame.VIDEORESIZE:  # This allows for full screen
+                    self.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)"""
 
                 if game_active:
                     if event.type == self.obstacle_timer:
@@ -184,7 +181,17 @@ class Game:
                 self.obstacles.empty()
                 self.screen.fill("white")
                 if score:
-                    save_highscore()
+                    max_score = max(self.data.values()) if self.data.values() else 0
+                    if highscore > max_score:
+                        highscore_screen(self.screen, self.clock, self.test_font)
+                        self.save_highscore()
+
+                    self.score_surface = self.test_font.render(f"Your score was: {score}", False, "black")
+                    highscorer = [key for key, value in self.data.items()
+                                  if value == max(self.data.values())][0][20:]
+                    highscore_text = f"HIGHSCORE: {highscore} - {highscorer}"
+                    self.highscore_surface = self.rest_font.render(highscore_text, False, "black")
+                    self.highscore_rect = self.highscore_surface.get_rect(center=(400, 150))
 
                     self.screen.blit(self.game_over_surface, self.game_over_rect)
                     self.screen.blit(self.score_surface, self.score_rect)
@@ -200,6 +207,7 @@ class Game:
                     pygame.display.update()
                     pygame.time.delay(1000)
                     game_over = True
+
                 else:
                     if pygame.mouse.get_pressed()[0] or pygame.key.get_pressed().__contains__(True):
                         game_active = True
