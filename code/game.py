@@ -2,6 +2,8 @@ import pygame
 import os
 import sys
 import random
+import json
+from datetime import datetime
 from player import Player
 from obstacle import Obstacle
 
@@ -16,12 +18,43 @@ collision_n = 0
 start_time = 0
 score = 0
 highscore = 0
+data = {}
 
 WIDTH, HEIGHT, MAX_FPS = (800, 400, 60)
 
 
+def save_highscore():
+    global highscore, data
+    max_score = max(data.values()) if data.values() else 0
+    if highscore > max_score:
+        now = datetime.now()
+        data[f"{now.strftime('%d/%m/%y %H:%M:%S')}"] = highscore
+
+        file_path = f"{os.path.dirname(__file__)}/highscore.txt"
+        with open(file_path, "w") as file:
+            json.dump(data, file)
+            print("Saved successfully")
+
+
+def load_highscore():
+    global highscore, data
+
+    file_path = f"{os.path.dirname(__file__)}/highscore.txt"
+    try:
+        with open(file_path) as file:
+            data = json.load(file)
+            highscore = max(data.values())
+            print("Loaded successfully")
+
+    except (json.decoder.JSONDecodeError, FileNotFoundError):
+        pass
+
+
 class Game:
     def __init__(self):
+        # --------------------------------LOAD HIGHSCORE--------------------------------------------#
+        load_highscore()
+
         # -----------------------------INITIATE PYGAME AND CLOCK------------------------------------#
         pygame.init()
         self.clock = pygame.time.Clock()
@@ -114,7 +147,7 @@ class Game:
             collision_n = 0
 
     def run(self):
-        global game_active, game_over, start_time
+        global game_active, game_over, start_time, score, highscore
         # ----------------------------------MAIN LOOP-----------------------------------------------#
         while True:
             # -----------------------------EVENT LOOP-----------------------------------------------#
@@ -151,16 +184,16 @@ class Game:
                 self.obstacles.empty()
                 self.screen.fill("white")
                 if score:
+                    save_highscore()
+
                     self.screen.blit(self.game_over_surface, self.game_over_rect)
                     self.screen.blit(self.score_surface, self.score_rect)
+                    self.screen.blit(self.highscore_surface, self.highscore_rect)
                     self.screen.blit(self.rest_surface, self.rest_rect)
 
                 else:
                     self.screen.blit(self.name_surface, self.name_rect)
                     self.screen.blit(self.start_surface, self.start_rect)
-
-                if highscore:
-                    self.screen.blit(self.highscore_surface, self.highscore_rect)
 
                 # ----------------------------(RE)START WITH DELAY----------------------------------#
                 if score and not game_over:
