@@ -1,12 +1,13 @@
 import pygame
+import asyncio
 import os
 import sys
 import random
 import json
 from datetime import datetime
-from player import Player
-from obstacle import Obstacle
-from highscore_screen import highscore_screen
+from code.player import Player
+from code.obstacle import Obstacle
+from code.highscore_screen import highscore_screen
 
 
 # --------------------------------GLOBAL VARIABLES DEFAULT-------------------------------------#
@@ -140,7 +141,7 @@ class Game:
         except (json.decoder.JSONDecodeError, FileNotFoundError):
             pass
 
-    def run(self):
+    async def run(self):
         global game_active, game_over, start_time, score, highscore
         # ----------------------------------MAIN LOOP-----------------------------------------------#
         while True:
@@ -217,3 +218,4 @@ class Game:
             # -------------------------------UPDATE DISPLAY AND MAX FPS-----------------------------#
             pygame.display.update()
             self.clock.tick(MAX_FPS)
+            await asyncio.sleep(0)
