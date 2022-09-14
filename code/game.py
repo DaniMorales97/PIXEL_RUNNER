@@ -4,15 +4,17 @@ import os
 import sys
 import random
 import json
+import string
 from datetime import datetime
 from code.player import Player
 from code.obstacle import Obstacle
-from code.highscore_screen import highscore_screen
+# from code.highscore_screen import highscore_screen
 
 
 # --------------------------------GLOBAL VARIABLES DEFAULT-------------------------------------#
 game_active = False
 game_over = False
+pressing = True
 run_highscore_screen = False
 
 colliding = False
@@ -21,6 +23,8 @@ collision_n = 0
 start_time = 0
 score = 0
 highscore = 0
+str_list = []
+name = ""
 
 WIDTH, HEIGHT, MAX_FPS = (800, 400, 60)
 
@@ -129,8 +133,8 @@ class Game:
             self.obstacles.empty()
 
     def save_highscore(self):
-        from code.highscore_screen import name
-        global highscore, run_highscore_screen
+        # from code.highscore_screen import name
+        global highscore, name, run_highscore_screen
 
         run_highscore_screen = False
 
@@ -152,6 +156,45 @@ class Game:
 
         except (json.decoder.JSONDecodeError, FileNotFoundError):
             pass
+
+    def highscore_screen(self):
+        global pressing, name
+        self.screen.fill("white")
+
+        keys = pygame.key.get_pressed()
+        if not pressing:
+            for letter in string.ascii_lowercase:
+                if eval(f"keys[pygame.K_{letter}]"):
+                    str_list.append(letter.upper())
+                    pressing = True
+
+            if keys[pygame.K_SPACE]:
+                str_list.append(" ")
+                pressing = True
+            elif keys[pygame.K_BACKSPACE]:
+                str_list.pop()
+                pressing = True
+            elif keys[pygame.K_RETURN]:
+                self.save_highscore()
+                str_list.clear()
+
+        elif not keys.__contains__(True):
+            pressing = False
+
+        name = "".join(letter for letter in str_list)
+
+        text1 = "WELL DONE!"
+        text2 = "YOU MADE A HIGH SCORE!"
+        text3 = "Please enter your name:"
+        text4 = f"{name}"
+        texts = [text1, text2, text3, text4]
+
+        (x, y) = (400, 50)
+        for text in texts:
+            surface = self.test_font.render(text, False, "black")
+            rect = surface.get_rect(center=(x, y))
+            self.screen.blit(surface, rect)
+            y += 100
 
     async def run(self):
         global game_active, game_over, start_time, score, highscore, run_highscore_screen
@@ -192,7 +235,7 @@ class Game:
             else:
                 self.screen.fill("white")
                 if run_highscore_screen:
-                    highscore_screen(self.screen, self.test_font, self.save_highscore)
+                    self.highscore_screen()
 
                 elif score:
                     max_score = max(self.data.values()) if self.data.values() else 0
