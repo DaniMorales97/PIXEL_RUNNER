@@ -13,6 +13,7 @@ from code.highscore_screen import highscore_screen
 # --------------------------------GLOBAL VARIABLES DEFAULT-------------------------------------#
 game_active = False
 game_over = False
+run_highscore_screen = False
 
 colliding = False
 collision_n = 0
@@ -126,7 +127,7 @@ class Game:
             collision_n = 0
 
     def save_highscore(self):
-        from highscore_screen import name
+        from code.highscore_screen import name
         global highscore
 
         now = datetime.now()
@@ -149,7 +150,7 @@ class Game:
             pass
 
     async def run(self):
-        global game_active, game_over, start_time, score, highscore
+        global game_active, game_over, start_time, score, highscore, run_highscore_screen
         # ----------------------------------MAIN LOOP-----------------------------------------------#
         while True:
             # -----------------------------EVENT LOOP-----------------------------------------------#
@@ -191,9 +192,15 @@ class Game:
                 self.screen.fill("white")
                 if score:
                     max_score = max(self.data.values()) if self.data.values() else 0
-                    if highscore > max_score:
-                        asyncio.run(highscore_screen(self.screen, self.clock, self.test_font))
-                        self.save_highscore()
+                    if highscore > max_score or run_highscore_screen:
+                        run_highscore_screen = True
+                        run_highscore_screen = highscore_screen(
+                            self.screen,
+                            self.test_font,
+                            self.save_highscore
+                        )
+                        pygame.display.update()
+                        continue
 
                     self.score_surface = self.test_font.render(f"Your score was: {score}", False, "black")
                     highscorer = [key for key, value in self.data.items()
