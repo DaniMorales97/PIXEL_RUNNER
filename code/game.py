@@ -184,7 +184,7 @@ class Game:
                 if score:
                     max_score = max(self.data.values()) if self.data.values() else 0
                     if highscore > max_score:
-                        highscore_screen(self.screen, self.clock, self.test_font)
+                        asyncio.run(highscore_screen(self.screen, self.clock, self.test_font))
                         self.save_highscore()
 
                     self.score_surface = self.test_font.render(f"Your score was: {score}", False, "black")

@@ -1,4 +1,5 @@
 import pygame
+import asyncio
 import sys
 import string
 
@@ -8,7 +9,7 @@ str_list = []
 pressing = True
 
 
-def highscore_screen(screen, clock, font):
+async def highscore_screen(screen, clock, font):
     global name, pressing
 
     str_list.clear()
@@ -56,3 +57,4 @@ def highscore_screen(screen, clock, font):
 
         pygame.display.update()
         clock.tick(60)
+        await asyncio.sleep(0)
