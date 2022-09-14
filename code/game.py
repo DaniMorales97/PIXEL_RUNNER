@@ -125,6 +125,8 @@ class Game:
         if collision_n == 3:
             game_active = False
             collision_n = 0
+            self.player.sprite.reset()
+            self.obstacles.empty()
 
     def save_highscore(self):
         from code.highscore_screen import name
@@ -183,26 +185,24 @@ class Game:
                 # ------------------------------CALL FUNCTIONS--------------------------------------#
                 self.collisions()
                 self.display_score()
-                self.display_fps()
 
             # --------------------------------START/GAME 0VER SCREEN--------------------------------#
             else:
-                self.player.sprite.reset()
-                self.obstacles.empty()
                 self.screen.fill("white")
-                if score:
-                    max_score = max(self.data.values()) if self.data.values() else 0
-                    if highscore > max_score or run_highscore_screen:
-                        run_highscore_screen = True
-                        run_highscore_screen = highscore_screen(
-                            self.screen,
-                            self.test_font,
-                            self.save_highscore
-                        )
-                        pygame.display.update()
-                        continue
+                if run_highscore_screen:
+                    run_highscore_screen = highscore_screen(
+                        self.screen,
+                        self.test_font,
+                        self.save_highscore
+                    )
 
-                    self.score_surface = self.test_font.render(f"Your score was: {score}", False, "black")
+                elif score:
+                    max_score = max(self.data.values()) if self.data.values() else 0
+                    if highscore > max_score:
+                        run_highscore_screen = True
+
+                    score_text = f"Your score was: {score}"
+                    self.score_surface = self.test_font.render(score_text, False, "black")
                     highscorer = [key for key, value in self.data.items()
                                   if value == max(self.data.values())][0][20:]
                     highscore_text = f"HIGHSCORE: {highscore} - {highscorer}"
@@ -219,18 +219,24 @@ class Game:
                     self.screen.blit(self.start_surface, self.start_rect)
 
                 # ----------------------------(RE)START WITH DELAY----------------------------------#
-                if score and not game_over:
-                    pygame.display.update()
-                    pygame.time.delay(1000)
-                    game_over = True
+                if not run_highscore_screen:
+                    if score and not game_over:
+                        self.screen.blit(self.game_over_surface, self.game_over_rect)
+                        self.screen.blit(self.score_surface, self.score_rect)
+                        self.screen.blit(self.highscore_surface, self.highscore_rect)
+                        self.screen.blit(self.rest_surface, self.rest_rect)
+                        pygame.display.update()
+                        pygame.time.delay(1000)
+                        game_over = True
 
-                else:
-                    if pygame.mouse.get_pressed()[0] or pygame.key.get_pressed().__contains__(True):
-                        game_active = True
-                        game_over = False
-                        start_time = pygame.time.get_ticks()
+                    else:
+                        if pygame.mouse.get_pressed()[0] or pygame.key.get_pressed().__contains__(True):
+                            game_active = True
+                            game_over = False
+                            start_time = pygame.time.get_ticks()
 
             # -------------------------------UPDATE DISPLAY AND MAX FPS-----------------------------#
+            self.display_fps()
             pygame.display.update()
             self.clock.tick(MAX_FPS)
             await asyncio.sleep(0)

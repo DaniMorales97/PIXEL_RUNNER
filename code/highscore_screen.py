@@ -47,3 +47,5 @@ def highscore_screen(screen, font, save_highscore):
         rect = surface.get_rect(center=(x, y))
         screen.blit(surface, rect)
         y += 100
+
+    return True
