@@ -221,13 +221,8 @@ class Game:
                 # ----------------------------(RE)START WITH DELAY----------------------------------#
                 if not run_highscore_screen:
                     if score and not game_over:
-                        self.screen.blit(self.game_over_surface, self.game_over_rect)
-                        self.screen.blit(self.score_surface, self.score_rect)
-                        self.screen.blit(self.highscore_surface, self.highscore_rect)
-                        self.screen.blit(self.rest_surface, self.rest_rect)
-                        pygame.display.update()
-                        pygame.time.delay(1000)
-                        game_over = True
+                        if not pygame.key.get_pressed().__contains__(True):
+                            game_over = True
 
                     else:
                         if pygame.mouse.get_pressed()[0] or pygame.key.get_pressed().__contains__(True):
