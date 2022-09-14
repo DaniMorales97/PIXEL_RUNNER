@@ -33,6 +33,7 @@ class Game:
         # -----------------------------INITIATE PYGAME AND CLOCK------------------------------------#
         pygame.init()
         self.clock = pygame.time.Clock()
+        self.fps = 0
 
         # -------------------------SCREEN DISPLAY, MUSIC AND BACKGROUND-----------------------------#
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -90,6 +91,12 @@ class Game:
 
         if score > highscore:
             highscore = score
+
+    def display_fps(self):
+        self.fps = self.clock.get_fps()
+        fps_surface = self.rest_font.render(str(round(self.fps)), False, "black")
+        fps_rect = fps_surface.get_rect(center=(50, 100))
+        self.screen.blit(fps_surface, fps_rect)
 
     def collisions(self):
         global collision_n, colliding, game_active, score, highscore
@@ -175,6 +182,7 @@ class Game:
                 # ------------------------------CALL FUNCTIONS--------------------------------------#
                 self.collisions()
                 self.display_score()
+                self.display_fps()
 
             # --------------------------------START/GAME 0VER SCREEN--------------------------------#
             else:
