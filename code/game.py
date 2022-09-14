@@ -242,18 +242,19 @@ class Game:
                     if highscore > max_score:
                         show_highscore_screen = True
 
-                    score_text = f"Your score was: {score}"
-                    self.score_surface = self.test_font.render(score_text, False, "black")
-                    highscorer = [key for key, value in self.data.items()
-                                  if value == max(self.data.values())][0][20:]
-                    highscore_text = f"HIGHSCORE: {highscore} - {highscorer}"
-                    self.highscore_surface = self.rest_font.render(highscore_text, False, "black")
-                    self.highscore_rect = self.highscore_surface.get_rect(center=(400, 150))
+                    else:
+                        score_text = f"Your score was: {score}"
+                        self.score_surface = self.test_font.render(score_text, False, "black")
+                        highscorer = [key for key, value in self.data.items()
+                                      if value == max(self.data.values())][0][20:]
+                        highscore_text = f"HIGHSCORE: {highscore} - {highscorer}"
+                        self.highscore_surface = self.rest_font.render(highscore_text, False, "black")
+                        self.highscore_rect = self.highscore_surface.get_rect(center=(400, 150))
 
-                    self.screen.blit(self.game_over_surface, self.game_over_rect)
-                    self.screen.blit(self.score_surface, self.score_rect)
-                    self.screen.blit(self.highscore_surface, self.highscore_rect)
-                    self.screen.blit(self.rest_surface, self.rest_rect)
+                        self.screen.blit(self.game_over_surface, self.game_over_rect)
+                        self.screen.blit(self.score_surface, self.score_rect)
+                        self.screen.blit(self.highscore_surface, self.highscore_rect)
+                        self.screen.blit(self.rest_surface, self.rest_rect)
 
                 else:
                     self.screen.blit(self.name_surface, self.name_rect)
