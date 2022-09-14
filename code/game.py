@@ -15,7 +15,7 @@ from code.obstacle import Obstacle
 game_active = False
 game_over = False
 pressing = True
-run_highscore_screen = False
+show_highscore_screen = False
 
 colliding = False
 collision_n = 0
@@ -134,9 +134,9 @@ class Game:
 
     def save_highscore(self):
         # from code.highscore_screen import name
-        global highscore, name, run_highscore_screen
+        global highscore, name, show_highscore_screen
 
-        run_highscore_screen = False
+        show_highscore_screen = False
 
         now = datetime.now()
         self.data[f"{now.strftime('%d/%m/%y %H:%M:%S')} - {name}"] = highscore
@@ -197,7 +197,7 @@ class Game:
             y += 100
 
     async def run(self):
-        global game_active, game_over, start_time, score, highscore, run_highscore_screen
+        global game_active, game_over, start_time, score, highscore, show_highscore_screen
         # ----------------------------------MAIN LOOP-----------------------------------------------#
         while True:
             # -----------------------------EVENT LOOP-----------------------------------------------#
@@ -234,13 +234,13 @@ class Game:
             # --------------------------------START/GAME 0VER SCREEN--------------------------------#
             else:
                 self.screen.fill("white")
-                if run_highscore_screen:
+                if show_highscore_screen:
                     self.highscore_screen()
 
                 elif score:
                     max_score = max(self.data.values()) if self.data.values() else 0
                     if highscore > max_score:
-                        run_highscore_screen = True
+                        show_highscore_screen = True
 
                     score_text = f"Your score was: {score}"
                     self.score_surface = self.test_font.render(score_text, False, "black")
@@ -260,7 +260,7 @@ class Game:
                     self.screen.blit(self.start_surface, self.start_rect)
 
                 # ----------------------------(RE)START WITH DELAY----------------------------------#
-                if not run_highscore_screen:
+                if not show_highscore_screen:
                     if score and not game_over:
                         if not pygame.key.get_pressed().__contains__(True):
                             game_over = True
