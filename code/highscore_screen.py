@@ -28,7 +28,6 @@ def highscore_screen(screen, font, save_highscore):
         elif keys[pygame.K_RETURN]:
             save_highscore()
             str_list.clear()
-            return False
 
     elif not keys.__contains__(True):
         pressing = False
@@ -47,5 +46,3 @@ def highscore_screen(screen, font, save_highscore):
         rect = surface.get_rect(center=(x, y))
         screen.blit(surface, rect)
         y += 100
-
-    return True

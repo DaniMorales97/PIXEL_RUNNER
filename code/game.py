@@ -130,7 +130,9 @@ class Game:
 
     def save_highscore(self):
         from code.highscore_screen import name
-        global highscore
+        global highscore, run_highscore_screen
+
+        run_highscore_screen = False
 
         now = datetime.now()
         self.data[f"{now.strftime('%d/%m/%y %H:%M:%S')} - {name}"] = highscore
@@ -190,11 +192,7 @@ class Game:
             else:
                 self.screen.fill("white")
                 if run_highscore_screen:
-                    run_highscore_screen = highscore_screen(
-                        self.screen,
-                        self.test_font,
-                        self.save_highscore
-                    )
+                    highscore_screen(self.screen, self.test_font, self.save_highscore)
 
                 elif score:
                     max_score = max(self.data.values()) if self.data.values() else 0
