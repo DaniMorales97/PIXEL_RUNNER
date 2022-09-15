@@ -196,6 +196,16 @@ class Game:
             self.screen.blit(surface, rect)
             y += 100
 
+        exit_surface = pygame.Surface((50, 50))
+        exit_surface.fill("red")
+        exit_rect = exit_surface.get_rect(center=(20, 20))
+        self.screen.blit(exit_surface, exit_rect)
+
+        if exit_rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+            name = "-"
+            self.save_highscore()
+            str_list.clear()
+
     async def run(self):
         global game_active, game_over, start_time, score, highscore, show_highscore_screen
         # ----------------------------------MAIN LOOP-----------------------------------------------#
