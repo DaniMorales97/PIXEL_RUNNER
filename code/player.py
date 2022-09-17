@@ -5,6 +5,8 @@ import pygame
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        self.screen = pygame.display.get_surface()
+
         walk1_path = os.path.dirname(__file__) + "/../graphics/Player/player_walk_1.png"
         walk1 = pygame.image.load(walk1_path).convert_alpha()
         walk2_path = os.path.dirname(__file__) + "/../graphics/Player/player_walk_2.png"
@@ -25,17 +27,47 @@ class Player(pygame.sprite.Sprite):
 
         self.dy = 0
 
+        self.right_arrow = pygame.Surface((50, 50), pygame.SRCALPHA)
+        pygame.draw.polygon(self.right_arrow, "grey", ((0, 0), (0, 50), (50, 25)))
+        self.right_arrow.set_alpha(200)
+        self.right_arrow_rect = self.right_arrow.get_rect(center=(680, 350))
+
+        self.left_arrow = pygame.transform.flip(self.right_arrow, True, False)
+        self.left_arrow.set_alpha(200)
+        self.left_arrow_rect = self.left_arrow.get_rect(center=(600, 350))
+
+    def draw_arrows(self):
+        self.screen.blit(self.right_arrow, self.right_arrow_rect)
+        self.screen.blit(self.left_arrow, self.left_arrow_rect)
+
     def player_input(self):
         keys = pygame.key.get_pressed()
-        if self.rect.bottom >= 300 and (keys[pygame.K_SPACE] or (
-                self.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]) or (
-                keys[pygame.K_UP] or keys[pygame.K_w])):
+        if self.rect.bottom >= 300 and (
+            keys[pygame.K_SPACE] or
+            (pygame.mouse.get_pressed()[0] and not (
+                self.left_arrow_rect.collidepoint(pygame.mouse.get_pos()) or
+                self.right_arrow_rect.collidepoint(pygame.mouse.get_pos())
+            )) or
+            keys[pygame.K_UP] or
+            keys[pygame.K_w]
+        ):
             self.dy = -20
             self.jump_sound.play()
 
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+        if (
+            keys[pygame.K_LEFT] or
+            keys[pygame.K_a] or
+            (pygame.mouse.get_pressed()[0] and
+                self.left_arrow_rect.collidepoint(pygame.mouse.get_pos()))
+        ):
             self.rect.x -= 10
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+
+        if (
+            keys[pygame.K_RIGHT] or
+            keys[pygame.K_d] or
+            (pygame.mouse.get_pressed()[0] and
+                self.right_arrow_rect.collidepoint(pygame.mouse.get_pos()))
+        ):
             self.rect.x += 10
 
         if self.rect.right >= 800:
@@ -63,6 +95,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.midbottom = (100, 300)
 
     def update(self):
+        self.draw_arrows()
         self.player_input()
         self.apply_gravity()
         self.animate()
