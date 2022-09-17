@@ -27,10 +27,10 @@ class Player(pygame.sprite.Sprite):
 
         self.dy = 0
 
-        self.right_arrow = pygame.Surface((50, 50), pygame.SRCALPHA)
-        pygame.draw.polygon(self.right_arrow, "grey", ((0, 0), (0, 50), (50, 25)))
+        self.right_arrow = pygame.Surface((90, 90), pygame.SRCALPHA)
+        pygame.draw.polygon(self.right_arrow, "grey", ((0, 0), (0, 90), (90, 45)))
         self.right_arrow.set_alpha(200)
-        self.right_arrow_rect = self.right_arrow.get_rect(center=(680, 350))
+        self.right_arrow_rect = self.right_arrow.get_rect(center=(720, 350))
 
         self.left_arrow = pygame.transform.flip(self.right_arrow, True, False)
         self.left_arrow.set_alpha(200)

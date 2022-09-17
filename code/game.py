@@ -97,11 +97,11 @@ class Game:
         if score > highscore:
             highscore = score
 
-    def display_fps(self):
+    """def display_fps(self):
         self.fps = self.clock.get_fps()
         fps_surface = self.rest_font.render(str(round(self.fps)), False, "black")
         fps_rect = fps_surface.get_rect(center=(50, 100))
-        self.screen.blit(fps_surface, fps_rect)
+        self.screen.blit(fps_surface, fps_rect)"""
 
     def collisions(self):
         global collision_n, colliding, game_active, score, highscore
@@ -273,7 +273,9 @@ class Game:
                 # ----------------------------(RE)START WITH DELAY----------------------------------#
                 if not show_highscore_screen:
                     if score and not game_over:
-                        if not pygame.key.get_pressed().__contains__(True):
+                        if not (
+                            pygame.key.get_pressed().__contains__(True) or pygame.mouse.get_pressed()[0]
+                        ):
                             game_over = True
 
                     else:
@@ -283,7 +285,7 @@ class Game:
                             start_time = pygame.time.get_ticks()
 
             # -------------------------------UPDATE DISPLAY AND MAX FPS-----------------------------#
-            self.display_fps()
+            # self.display_fps()
             pygame.display.update()
             self.clock.tick(MAX_FPS)
             await asyncio.sleep(0)
