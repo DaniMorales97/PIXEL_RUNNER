@@ -37,13 +37,13 @@ def uy(*argv):
     return acc
 
 print("""
-Loading PIXEL_RUNNER from PIXEL_RUNNER.apk
+Loading pixel_runner from pixel_runner.apk
     Pygbag Version : 0.4.0
     Template Version : 0.2.0
     CDN URL : https://pygame-web.github.io/archives/0.2.0/
     Screen  : {{cookiecutter.width}}x{{cookiecutter.height}}
-    Title   : PIXEL_RUNNER
-    Folder  : PIXEL_RUNNER
+    Title   : pixel_runner
+    Folder  : pixel_runner
     Authors : pgw
     SPDX-License-Identifier: cookiecutter.spdx
 
@@ -75,12 +75,12 @@ async def sitecustomize():
 
 
 
-    apk = "PIXEL_RUNNER.apk"
+    apk = "pixel_runner.apk"
 
-    bundle = "PIXEL_RUNNER"
+    bundle = "pixel_runner"
 
     # the C or js loader could do that but be explicit.
-    appdir = Path(f"/data/data/{bundle}") # /data/data/PIXEL_RUNNER
+    appdir = Path(f"/data/data/{bundle}") # /data/data/pixel_runner
     appdir.mkdir()
 
 
@@ -217,7 +217,7 @@ config = {
     _sdl2 : "canvas",
     user_canvas : 1,
     ume_block : 1,
-    archive : "PIXEL_RUNNER",
+    archive : "pixel_runner",
     gui_debug : 3,
     cdn : "https://pygame-web.github.io/archives/0.2.0/",
     autorun : 0,
@@ -226,7 +226,7 @@ config = {
 
 </script>
 
-    <title>PIXEL_RUNNER</title>
+    <title>pixel_runner</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
