@@ -163,9 +163,9 @@ class Game:
 
         keys = pygame.key.get_pressed()
         if not pressing:
-            for letter in string.ascii_lowercase:
-                if eval(f"keys[pygame.K_{letter}]"):
-                    str_list.append(letter.upper())
+            for character in (string.ascii_lowercase + string.digits):
+                if eval(f"keys[pygame.K_{character}]"):
+                    str_list.append(character.upper())
                     pressing = True
 
             if keys[pygame.K_SPACE]:
